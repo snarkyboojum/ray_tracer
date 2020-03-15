@@ -2,7 +2,10 @@
 // https://raytracing.github.io/books/RayTracingInOneWeekend.html
 // to Rust
 
+// TODO: pull these mod declarations out into a separate lib.rs
 mod vec3;
+
+use vec3::Vec3;
 
 // Construct a ppm file for image data, e.g.
 // P3
@@ -40,5 +43,5 @@ fn main() {
 
     // we use a plan txt ppm to start building images
     write_ppm(width, height, max_value);
-    vec3::Vec3::new();
+    Vec3::new();
 }
