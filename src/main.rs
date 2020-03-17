@@ -13,7 +13,7 @@ use vec3::Vec3;
 // 255
 // 255 0 0    0 255 0  0 0 255
 // 255 255 0  255 255  255 0 0 0
-// 
+//
 fn write_ppm(w: i32, h: i32, max_value: i32) {
     println!("P3\n{} {}\n{}", w, h, max_value);
 
@@ -30,7 +30,6 @@ fn write_ppm(w: i32, h: i32, max_value: i32) {
             println!("{} {} {}", ir, ig, ib);
         }
     }
-
 }
 
 fn main() {
@@ -48,5 +47,4 @@ fn main() {
 
     let v3 = v1 + v2;
     println!("Added v1 and v2: {:?}", v3);
-
 }
