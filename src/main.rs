@@ -31,7 +31,6 @@ fn write_ppm(w: i32, h: i32, max_value: i32) {
         }
     }
 
-
 }
 
 fn main() {
@@ -43,5 +42,11 @@ fn main() {
 
     // we use a plan txt ppm to start building images
     write_ppm(width, height, max_value);
-    Vec3::new();
+
+    let v1 = Vec3::new(1f32, 2f32, 6f32);
+    let v2 = Vec3::new(2f32, 6f32, 8f32);
+
+    let v3 = v1 + v2;
+    println!("Added v1 and v2: {:?}", v3);
+
 }
