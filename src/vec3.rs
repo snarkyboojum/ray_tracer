@@ -1,6 +1,6 @@
 use std::ops;
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Default, Copy, Clone, PartialEq)]
 pub struct Vec3 {
     e: [f32; 3],
 }
@@ -41,6 +41,10 @@ impl Vec3 {
     pub fn unit_vector(v: &Vec3) -> Vec3 {
         *v / v.length()
     }
+
+    pub fn dot(v1: &Vec3, v2: &Vec3) -> f32 {
+        v1.e[0] * v2.e[0] + v1.e[1] * v2.e[1] + v1.e[2] * v2.e[2]
+    }
 }
 
 impl ops::Add for Vec3 {
@@ -53,6 +57,30 @@ impl ops::Add for Vec3 {
                 self.e[1] + rhs.e[1],
                 self.e[2] + rhs.e[2],
             ],
+        }
+    }
+}
+
+impl ops::Sub for Vec3 {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Vec3 {
+            e: [
+                self.e[0] - rhs.e[0],
+                self.e[1] - rhs.e[1],
+                self.e[2] - rhs.e[2],
+            ],
+        }
+    }
+}
+
+impl ops::Mul<Vec3> for f32 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3 {
+            e: [rhs.e[0] * self, rhs.e[1] * self, rhs.e[2] * self],
         }
     }
 }
