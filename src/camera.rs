@@ -9,12 +9,25 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn camera() -> Camera {
+    pub fn camera(lookfrom: Vec3, lookat: Vec3, vup: Vec3, vfov: f32, aspect: f32) -> Camera {
+        let theta = vfov * std::f32::consts::PI / 180.0;
+        let half_height = (theta / 2.0).tan();
+        let half_width = aspect * half_height;
+
+        let origin = lookfrom;
+        let w = Vec3::unit_vector(&(lookfrom - lookat));
+        let u = Vec3::unit_vector(&Vec3::cross(&vup, &w));
+        let v = Vec3::cross(&w, &u);
+
+        let lower_left_corner = origin - half_width * u - half_height * v - w;
+        let horizontal = 2.0 * half_width * u;
+        let vertical = 2.0 * half_height * v;
+
         Camera {
-            lower_left_corner: Vec3::new(-2.0, -1.0, -1.0),
-            horizontal: Vec3::new(4.0, 0.0, 0.0),
-            vertical: Vec3::new(0.0, 2.0, 0.0),
-            origin: Vec3::new(0.0, 0.0, 0.0),
+            lower_left_corner,
+            horizontal,
+            vertical,
+            origin,
         }
     }
     pub fn get_ray(&self, u: f32, v: f32) -> Ray {

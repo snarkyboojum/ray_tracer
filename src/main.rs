@@ -49,8 +49,8 @@ fn color(r: &Ray, world: &HittableList, depth: i32) -> Vec3 {
 fn main() {
     //println!("A raytracer in Rust!");
 
-    let width = 400;
-    let height = 200;
+    let width = 1600;
+    let height = 800;
     let samples = 100;
     let max_value = 255;
 
@@ -90,9 +90,16 @@ fn main() {
         -0.45,
         Material::Dielectric { ref_idx: 1.5 },
     )));
+
     let world = HittableList::new(list);
 
-    let cam = Camera::camera();
+    let cam = Camera::camera(
+        Vec3::new(-2.0, 2.0, 1.0),
+        Vec3::new(0.0, 0.0, -1.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        90.0,
+        width as f32 / height as f32,
+    );
     let mut rng = rand::thread_rng();
 
     // we use a plan txt ppm to start building images
