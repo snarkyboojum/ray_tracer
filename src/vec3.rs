@@ -1,3 +1,4 @@
+use rand::prelude::*;
 use std::ops;
 
 #[derive(Debug, Default, Copy, Clone, PartialEq)]
@@ -56,6 +57,24 @@ impl Vec3 {
                 v1.e[1] * v2.e[2] - v1.e[2] * v2.e[1],
                 v1.e[2] * v2.e[0] - v1.e[0] * v2.e[2],
                 v1.e[0] * v2.e[1] - v1.e[1] * v2.e[0],
+            ],
+        }
+    }
+
+    pub fn random() -> Vec3 {
+        let mut rng = rand::thread_rng();
+        Vec3 {
+            e: [rng.gen(), rng.gen(), rng.gen()],
+        }
+    }
+
+    pub fn random_init(min: f32, max: f32) -> Vec3 {
+        let mut rng = rand::thread_rng();
+        Vec3 {
+            e: [
+                rng.gen_range(min, max),
+                rng.gen_range(min, max),
+                rng.gen_range(min, max),
             ],
         }
     }
