@@ -93,12 +93,22 @@ fn main() {
 
     let world = HittableList::new(list);
 
+    let aspect_ratio = width as f32 / height as f32;
+    let look_from = Vec3::new(3.0, 3.0, 2.0);
+    let look_at = Vec3::new(0.0, 0.0, -1.0);
+    let vup = Vec3::new(0.0, 1.0, 0.0);
+
+    let dist_to_focus = (look_from - look_at).length();
+    let apeture = 2.0;
+
     let cam = Camera::camera(
-        Vec3::new(-2.0, 2.0, 1.0),
-        Vec3::new(0.0, 0.0, -1.0),
-        Vec3::new(0.0, 1.0, 0.0),
-        90.0,
-        width as f32 / height as f32,
+        look_from,
+        look_at,
+        vup,
+        20.0,
+        aspect_ratio,
+        apeture,
+        dist_to_focus,
     );
     let mut rng = rand::thread_rng();
 
