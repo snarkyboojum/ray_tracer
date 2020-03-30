@@ -2,7 +2,7 @@
 
 A simple ray tracer written in Rust. Translated from [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) into Rust (from C++).
 
-I also recorded myself building this, so have a look at the [Rust: Building a Ray Tracer](https://www.youtube.com/watch?v=_5hD0gxRzzg&list=PLctja8lh-0MdlbFXjmBoFn_1hiK4qkVqe) playlist on YouTube.
+I also recorded myself building this, so have a look at the [Rust: Building a Ray Tracer playlist](https://www.youtube.com/watch?v=_5hD0gxRzzg&list=PLctja8lh-0MdlbFXjmBoFn_1hiK4qkVqe) on YouTube.
 
 For reference, a high-resolution render of the final scene looks like this:
 
