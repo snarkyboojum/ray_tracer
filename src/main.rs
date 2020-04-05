@@ -20,6 +20,7 @@ use sphere::Sphere;
 use vec3::Vec3;
 
 use rand::prelude::*;
+use std::time;
 
 fn color(r: &Ray, world: &HittableList, depth: i32) -> Vec3 {
     if let Some(rec) = world.hit(&r, 0.001, std::f32::MAX) {
@@ -49,9 +50,9 @@ fn color(r: &Ray, world: &HittableList, depth: i32) -> Vec3 {
 fn main() {
     //println!("A raytracer in Rust!");
 
-    let width = 1600;
-    let height = 800;
-    let samples = 100; //100;
+    let width = 800; // 1600;
+    let height = 400; // 800;
+    let samples = 10; //100;
     let max_value = 255;
 
     // this is so helpful, https://stackoverflow.com/questions/46965867/rust-borrowed-value-must-be-valid-for-the-static-lifetime
@@ -145,6 +146,7 @@ fn main() {
     // we use a plan txt ppm to start building images
     println!("P3\n{} {}\n{}", width, height, max_value);
 
+    let start = time::Instant::now();
     for j in (0..height).rev() {
         for i in 0..width {
             let mut col = Vec3::default();
@@ -167,4 +169,7 @@ fn main() {
             println!("{} {} {}", ir, ig, ib);
         }
     }
+
+    let duration = time::Instant::now() - start;
+    println!("Generate took: {:?}", duration);
 }
