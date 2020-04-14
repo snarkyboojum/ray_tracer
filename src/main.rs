@@ -144,49 +144,56 @@ fn main() {
         dist_to_focus,
     );
 
-    // collect a vector of rgb tuples for each pixel (width * height)
-    let mut screen = vec![(0u32, 0u32, 0u32); width * height];
+    // collect a vector (rows) of vector of rgb tuples (pixels in a row)
+    let mut screen: Vec<Vec<(u32, u32, u32)>> = vec![vec![]; height];
     let start = time::Instant::now();
 
     screen
-        .iter_mut()
-        // .par_iter_mut()
+        // .iter_mut()
+        .par_iter_mut()
         .enumerate()
-        .for_each(|(index, pixel)| {
+        .for_each(|(row_index, pixels)| {
             let mut rng = rand::thread_rng();
-            let column = index % width; // column is the 'count' within a row
-            let row = height - index / width; // the row number
 
-            // println!("Row: {}, column: {}", row, column);
-            let mut col = Vec3::default();
+            // we have to count from height back down to 0
+            let row = height - row_index;
 
-            for _ in 0..samples {
-                let u = (column as f32 + rng.gen::<f32>()) / width as f32;
-                let v = (row as f32 + rng.gen::<f32>()) / height as f32;
+            for column in 0..width {
+                // println!("Row: {}, column: {}", row, column);
+                let mut col = Vec3::default();
 
-                let r = &cam.get_ray(u, v);
-                col = col + color(&r, &world, 0);
+                for _ in 0..samples {
+                    let u = (column as f32 + rng.gen::<f32>()) / width as f32;
+                    let v = (row as f32 + rng.gen::<f32>()) / height as f32;
+
+                    let r = &cam.get_ray(u, v);
+                    col = col + color(&r, &world, 0);
+                }
+
+                col = col / samples as f32;
+                col = Vec3::new(col.r().sqrt(), col.g().sqrt(), col.b().sqrt());
+
+                let ir = (255.99 * col.r()) as u32;
+                let ig = (255.99 * col.g()) as u32;
+                let ib = (255.99 * col.b()) as u32;
+
+                // no alpha, just 24 bit colour
+                pixels.push((ir, ig, ib));
+                // *(pixels[column]) = (ir, ig, ib);
             }
-
-            col = col / samples as f32;
-            col = Vec3::new(col.r().sqrt(), col.g().sqrt(), col.b().sqrt());
-
-            let ir = (255.99 * col.r()) as u32;
-            let ig = (255.99 * col.g()) as u32;
-            let ib = (255.99 * col.b()) as u32;
-
-            // no alpha, just 24 bit colour
-            *pixel = (ir, ig, ib);
         });
 
     eprintln!("Number of pixels generated: {}", screen.len());
 
     // we use a plain txt ppm to start building images
-    println!("P3\n{} {}\n{}", width, height, max_value);
+    // println!("P3\n{} {}\n{}", width, height, max_value);
 
-    for (r, g, b) in screen {
-        println!("{}, {}, {}", r, g, b);
-    }
+    // // TODO: this is pretty inefficient - should just write to a buffer at render time
+    // for row in screen {
+    //     for (r, g, b) in row {
+    //         println!("{}, {}, {}", r, g, b);
+    //     }
+    // }
 
     let duration = time::Instant::now() - start;
     eprintln!("Render elapsed time: {:?}", duration);
