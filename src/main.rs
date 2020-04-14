@@ -20,6 +20,7 @@ use sphere::Sphere;
 use vec3::Vec3;
 
 use rand::prelude::*;
+use rayon::prelude::*;
 use std::time;
 
 fn color(r: &Ray, world: &HittableList, depth: i32) -> Vec3 {
@@ -50,9 +51,9 @@ fn color(r: &Ray, world: &HittableList, depth: i32) -> Vec3 {
 fn main() {
     //println!("A raytracer in Rust!");
 
-    let width = 800; // 1600;
-    let height = 400; // 800;
-    let samples = 10; //100;
+    let width = 1600; // 1600;
+    let height = 800; // 800;
+    let samples = 100; //100;
     let max_value = 255;
 
     // this is so helpful, https://stackoverflow.com/questions/46965867/rust-borrowed-value-must-be-valid-for-the-static-lifetime
@@ -143,17 +144,25 @@ fn main() {
         dist_to_focus,
     );
 
-    // we use a plan txt ppm to start building images
-    println!("P3\n{} {}\n{}", width, height, max_value);
-
+    // collect a vector of rgb tuples for each pixel (width * height)
+    let mut screen = vec![(0u32, 0u32, 0u32); width * height];
     let start = time::Instant::now();
-    for j in (0..height).rev() {
-        for i in 0..width {
+
+    screen
+        .iter_mut()
+        // .par_iter_mut()
+        .enumerate()
+        .for_each(|(index, pixel)| {
+            let mut rng = rand::thread_rng();
+            let column = index % width; // column is the 'count' within a row
+            let row = height - index / width; // the row number
+
+            // println!("Row: {}, column: {}", row, column);
             let mut col = Vec3::default();
 
             for _ in 0..samples {
-                let u = (i as f32 + rng.gen::<f32>()) / width as f32;
-                let v = (j as f32 + rng.gen::<f32>()) / height as f32;
+                let u = (column as f32 + rng.gen::<f32>()) / width as f32;
+                let v = (row as f32 + rng.gen::<f32>()) / height as f32;
 
                 let r = &cam.get_ray(u, v);
                 col = col + color(&r, &world, 0);
@@ -162,14 +171,23 @@ fn main() {
             col = col / samples as f32;
             col = Vec3::new(col.r().sqrt(), col.g().sqrt(), col.b().sqrt());
 
-            let ir = (255.99 * col.r()) as i32;
-            let ig = (255.99 * col.g()) as i32;
-            let ib = (255.99 * col.b()) as i32;
+            let ir = (255.99 * col.r()) as u32;
+            let ig = (255.99 * col.g()) as u32;
+            let ib = (255.99 * col.b()) as u32;
 
-            println!("{} {} {}", ir, ig, ib);
-        }
+            // no alpha, just 24 bit colour
+            *pixel = (ir, ig, ib);
+        });
+
+    eprintln!("Number of pixels generated: {}", screen.len());
+
+    // we use a plain txt ppm to start building images
+    println!("P3\n{} {}\n{}", width, height, max_value);
+
+    for (r, g, b) in screen {
+        println!("{}, {}, {}", r, g, b);
     }
 
     let duration = time::Instant::now() - start;
-    println!("Generate took: {:?}", duration);
+    eprintln!("Render elapsed time: {:?}", duration);
 }
