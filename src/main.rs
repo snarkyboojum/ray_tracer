@@ -144,13 +144,13 @@ fn main() {
         dist_to_focus,
     );
 
-    // collect a vector of rgb tuples for each pixel (width * height)
+    // the "screen" is just a vector of rgb tuples for each pixel (width * height)
     let mut screen = vec![(0u32, 0u32, 0u32); width * height];
     let start = time::Instant::now();
 
     screen
-        .iter_mut()
-        // .par_iter_mut()
+        // .iter_mut()
+        .par_iter_mut()
         .enumerate()
         .for_each(|(index, pixel)| {
             let mut rng = rand::thread_rng();

@@ -103,11 +103,10 @@ fn refract(v: &Vec3, n: &Vec3, ni_over_nt: f32, refracted: &mut Vec3) -> bool {
 }
 
 pub fn random_in_unit_sphere() -> Vec3 {
-    let mut p = Vec3::default();
     let mut rng = rand::thread_rng();
 
     loop {
-        p = 2.0 * Vec3::new(rng.gen::<f32>(), rng.gen::<f32>(), rng.gen::<f32>())
+        let p = 2.0 * Vec3::new(rng.gen::<f32>(), rng.gen::<f32>(), rng.gen::<f32>())
             - Vec3::new(1.0, 1.0, 1.0);
 
         if p.squared_length() < 1.0 {
